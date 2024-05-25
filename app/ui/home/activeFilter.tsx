@@ -11,22 +11,25 @@ const ActiveFilter = () => {
   const [isActive, setIsActive] = useState<boolean | "all">("all");
   const { replace } = useRouter();
 
-  const debouncedHandleActiveChange = useDebouncedCallback((value) => {
-    const params = new URLSearchParams(searchParams);
-    if (value !== null) {
-      params.set("isActive", value);
-    } else {
-      params.delete("isActive");
-    }
-    const queryString = params.toString();
-    replace(`${pathname}?${decodeURIComponent(queryString)}`);
-  }, 300); // 300 milliseconds debounce delay
+  const debouncedHandleActiveChange = useDebouncedCallback(
+    (value: boolean | "all") => {
+      const params = new URLSearchParams(searchParams);
+      if (value !== "all") {
+        params.set("isActive", String(value));
+      } else {
+        params.delete("isActive");
+      }
+      const queryString = params.toString();
+      replace(`${pathname}?${decodeURIComponent(queryString)}`);
+    },
+    300
+  ); // 300 milliseconds debounce delay
 
   const handleActiveChange = (value: string) => {
     const booleanValue =
       value === "true" ? true : value === "false" ? false : "all";
     setIsActive(booleanValue);
-    debouncedHandleActiveChange(value);
+    debouncedHandleActiveChange(booleanValue);
   };
 
   return (

@@ -65,9 +65,10 @@ export async function fetchFilteredEmployees(
     // if (isActive) {
     //   queryBuilder = queryBuilder.eq("active", isActive);
     // }
-
-    if (isActive !== "all") {
-      queryBuilder = queryBuilder.eq("active", isActive);
+    if (isActive) {
+      if (isActive !== "all") {
+        queryBuilder = queryBuilder.eq("active", isActive);
+      }
     }
 
     const { data, error } = await queryBuilder.range(
