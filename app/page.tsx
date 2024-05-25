@@ -5,13 +5,10 @@ import { Suspense } from "react";
 import { fetchEmployees, fetchFilteredEmployees, fetchTeams } from "./lib/data";
 import EmployeesTable from "./ui/home/table";
 import Search from "./ui/home/search";
-import Filtering from "./ui/home/filtering";
+
 import EmploymentStatus from "./ui/home/activeFilter";
 import ActiveFilter from "./ui/home/activeFilter";
-
-type teamsProps = {
-  teams: string[];
-};
+import Filtering from "./ui/home/filtering";
 
 export default async function Home({
   searchParams,
@@ -25,12 +22,17 @@ export default async function Home({
 }) {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const teams = searchParams?.teams || "";
-  const isActive = searchParams?.isActive;
+  const teamsQ = searchParams?.teams || "";
+  const isActive = searchParams?.isActive || false;
 
   // const employees = await fetchFilteredEmployees(query);
   const employeeTeams = await fetchTeams();
+  // console.log(employeeTeams);
 
+  // const stringTeams: string[] = employeeTeams?.flatMap((team) => team.teams);
+  const stringTeams: string[] = employeeTeams
+    ? employeeTeams.flatMap((team) => team.teams)
+    : [];
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between ml-4">
@@ -44,18 +46,27 @@ export default async function Home({
       {/* <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         {/* <Table query={query} currentPage={currentPage} /> */}
       {/* </Suspense>  */}
-      <EmployeesTable
-        query={query}
-        currentPage={currentPage}
-        teamsQuery={teams}
-        isActive={isActive}
-      />
-      <div className="mt-5 flex w-full justify-center">
-        {/* <Pagination totalPages={totalPages} /> */}
-      </div>
-      <div className="mt-5 flex w-full justify-center gap-16">
-        <Filtering teams={employeeTeams} />
-        <ActiveFilter />
+      <div className="w-full flex mt-6">
+        <div className="flex-none md:w-64 mt-6">
+          <Filtering teams={stringTeams} />
+          <ActiveFilter />
+        </div>
+        <div className="w-full">
+          <EmployeesTable
+            query={query}
+            currentPage={currentPage}
+            teamsQuery={teamsQ}
+            isActive={isActive}
+          />
+
+          <div className="mt-5 flex w-full justify-center">
+            {/* <Pagination totalPages={totalPages} /> */}
+          </div>
+          <div className="mt-5 flex w-full justify-center gap-16">
+            {/* <Filtering teams={employeeTeams} /> */}
+            {/* <ActiveFilter /> */}
+          </div>
+        </div>
       </div>
     </div>
   );

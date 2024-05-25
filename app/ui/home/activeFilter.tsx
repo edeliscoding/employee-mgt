@@ -8,7 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 const ActiveFilter = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [isActive, setIsActive] = useState(null);
+  const [isActive, setIsActive] = useState<boolean | "all">("all");
   const { replace } = useRouter();
 
   const debouncedHandleActiveChange = useDebouncedCallback((value) => {
@@ -22,21 +22,26 @@ const ActiveFilter = () => {
     replace(`${pathname}?${decodeURIComponent(queryString)}`);
   }, 300); // 300 milliseconds debounce delay
 
-  const handleActiveChange = (value) => {
-    setIsActive(value);
+  const handleActiveChange = (value: string) => {
+    const booleanValue =
+      value === "true" ? true : value === "false" ? false : "all";
+    setIsActive(booleanValue);
     debouncedHandleActiveChange(value);
   };
 
   return (
-    <div>
+    <div className="mt-6">
+      <h2 className="text-gray-800 text-md pb-2">
+        Filter by Employment Status
+      </h2>
       <div>
         <input
           type="radio"
           id="all"
           name="activeStatus"
           value="all"
-          checked={isActive === null}
-          onChange={() => handleActiveChange(null)}
+          checked={isActive === "all"}
+          onChange={() => handleActiveChange("all")}
         />
         <label htmlFor="all">All</label>
       </div>
@@ -46,7 +51,7 @@ const ActiveFilter = () => {
           id="active"
           name="activeStatus"
           value="true"
-          checked={isActive === "true"}
+          checked={isActive === true}
           onChange={() => handleActiveChange("true")}
         />
         <label htmlFor="active">Active</label>
@@ -57,7 +62,7 @@ const ActiveFilter = () => {
           id="inactive"
           name="activeStatus"
           value="false"
-          checked={isActive === "false"}
+          checked={isActive === false}
           onChange={() => handleActiveChange("false")}
         />
         <label htmlFor="inactive">Inactive</label>

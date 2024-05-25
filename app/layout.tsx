@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ActiveFilter from "./ui/home/activeFilter";
+import Filtering from "./ui/home/filtering";
+import EdelLogo from "./ui/home/logo";
+import TeamsFiltering from "./ui/home/teamsFilter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} antialised p-6`}>{children}</body>
     </html>
   );
 }

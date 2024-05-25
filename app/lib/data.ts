@@ -46,7 +46,7 @@ export async function fetchFilteredEmployees(
   query: string,
   currentPage: number,
   teamsQuery: string,
-  isActive: boolean
+  isActive: boolean | string
 ) {
   //   console.log(teamsQuery);
   noStore();
@@ -62,7 +62,11 @@ export async function fetchFilteredEmployees(
       queryBuilder = queryBuilder.overlaps("teams", teamsQuery.split(","));
     }
 
-    if (isActive) {
+    // if (isActive) {
+    //   queryBuilder = queryBuilder.eq("active", isActive);
+    // }
+
+    if (isActive !== "all") {
       queryBuilder = queryBuilder.eq("active", isActive);
     }
 
